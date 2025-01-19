@@ -2,13 +2,40 @@
 #include <SDL.h>
 #include <stdio.h>
 
-int main() 
+void display_bmp(const char *file_name, SDL_Renderer *renderer)
+{
+    SDL_Surface *image_surface = SDL_LoadBMP(file_name);
+    if(image_surface == NULL)
+    {
+        printf("could not load BMP file '%s\n'", file_name,SDL_GetError());
+        return;
+    }
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image_surface);
+    SDL_FreeSurface(image_surface);
+    if(texture ==NULL)
+    {
+        printf("could not create texture from BMP file '%s\n'", file_name, SDL_GetError());
+        return;
+    }
+    SDL_RenderClear(renderer);
+    if(SDL_RenderCopy(renderer,texture,NULL,NULL)<0)
+    {
+        printf("Could not copy texture %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
+
+}
+int main(int argc, char *argv[]) 
 {
     const int SCREEN_WIDTH = 640;
     const int SCREEN_BREADTH = 480;
 
-    SDL_Window* window = NULL;
-    SDL_Surface* screenSurface = NULL;
+    SDL_Window *window = NULL;
+    // SDL_Renderer *renderer = NULL;
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -23,12 +50,19 @@ int main()
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 
         }
-        screenSurface = SDL_GetWindowSurface(window);
-        // SDL_FillRect(screenSurface,NULL,SDL_MapRGB(screenSurface -> format, 0xFF, 0xFF, 0xFF)); //Makes the screen white
-        SDL_UpdateWindowSurface(window);
-
     }
-    
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+    if(renderer == NULL)
+    {
+        printf("could not create renderer %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    // display_bmp("res/sample1.bmp",renderer); //with this approach i can load the only one image that is added
+    display_bmp(argv[1],renderer); //with this i can render any bmp file i specify in the command
     //Keeps window from closing instantly
     SDL_Event event;
     int running = 1;
@@ -48,3 +82,4 @@ int main()
 
     return 0;
 }
+
