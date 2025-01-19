@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
 
     // display_bmp("res/sample1.bmp",renderer); //with this approach i can load the only one image that is added
     display_bmp(argv[1],renderer); //with this i can render any bmp file i specify in the command
+    
     //Keeps window from closing instantly
     SDL_Event event;
     int running = 1;
