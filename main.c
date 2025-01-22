@@ -1,7 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <stdio.h>
-#include <drawtoscreen.c>
+#include <drawtoscreen.h>
 
 
 int main(int argc, char *argv[]) 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Draw a horizontal line of yellow pixels
+    // Draws a triangle:: more like square
     for (int x = 100; x < 200; x++) 
     {
         for(int y = 150; y < 250; y++)
