@@ -6,8 +6,8 @@
 
 int main(int argc, char *argv[]) 
 {
-    const int SCREEN_WIDTH = 640;
-    const int SCREEN_BREADTH = 480;
+    const int SCREEN_WIDTH = 1024;
+    const int SCREEN_BREADTH = 720;
     
     SDL_Surface *screen;
     SDL_Window *window = NULL;
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        window = SDL_CreateWindow("C_Game", SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_BREADTH,SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow("C_Game", SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_BREADTH,SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if(window == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -43,8 +43,10 @@ int main(int argc, char *argv[])
     screen = SDL_GetWindowSurface(window);
     yellow = SDL_MapRGB(screen->format, 0xff, 0xff, 0x00);
 
-    x = screen->w / 2;
-    y = screen->h / 2;
+    // x = screen->w / 2;
+    // y = screen->h / 2;
+ 
+
     //lock the screen for direct access to pixels
     if(SDL_MUSTLOCK(screen))
     {
@@ -55,23 +57,23 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Draws a triangle:: more like square
-    for (int x = 100; x < 200; x++) 
+    //test
+    for (int i = 0; i < 20000; i++)
     {
-        for(int y = 150; y < 250; y++)
-        {
-            putPixel(screen, x,y, yellow); 
-        }
+        int x = rand() % screen->w;
+        int y = rand() % screen->h;
+        putPixel(screen,x,y,yellow);
+
+        SDL_UpdateWindowSurface(window);
     }
-
-    SDL_UpdateWindowSurface(window);
-
+    
+    
+    // SDL_UpdateWindowSurface(window);
     if(SDL_MUSTLOCK(screen))
     {
         SDL_UnlockSurface(screen);
     }
     
-
     //Keeps window from closing instantly
     SDL_Event event;
     int running = 1;
@@ -86,8 +88,6 @@ int main(int argc, char *argv[])
         }
         SDL_Delay(16);
     }
-
- 
 
     SDL_DestroyWindow(window);
     SDL_Quit();
