@@ -1,2 +1,2 @@
 all:
-	gcc -I src/inc -L src/lib -o main main.c -lSDL2main -lSDL2
+	gcc -I src/inc -I headers -L src/lib -o main main.c -lSDL2main -lSDL2

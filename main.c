@@ -1,41 +1,17 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <stdio.h>
+#include <drawtoscreen.c>
 
-void display_bmp(const char *file_name, SDL_Renderer *renderer)
-{
-    SDL_Surface *image_surface = SDL_LoadBMP(file_name);
-    if(image_surface == NULL)
-    {
-        printf("could not load BMP file '%s\n'", file_name,SDL_GetError());
-        return;
-    }
 
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image_surface);
-    SDL_FreeSurface(image_surface);
-    if(texture ==NULL)
-    {
-        printf("could not create texture from BMP file '%s\n'", file_name, SDL_GetError());
-        return;
-    }
-    SDL_RenderClear(renderer);
-    if(SDL_RenderCopy(renderer,texture,NULL,NULL)<0)
-    {
-        printf("Could not copy texture %s\n", SDL_GetError());
-        return;
-    }
-
-    SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(texture);
-
-}
 int main(int argc, char *argv[]) 
 {
     const int SCREEN_WIDTH = 640;
     const int SCREEN_BREADTH = 480;
-
+    
+    SDL_Surface *screen;
     SDL_Window *window = NULL;
-    // SDL_Renderer *renderer = NULL;
+
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -60,10 +36,42 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return 1;
     }
-
-    // display_bmp("res/sample1.bmp",renderer); //with this approach i can load the only one image that is added
-    display_bmp(argv[1],renderer); //with this i can render any bmp file i specify in the command
     
+    //puts pixel 
+    int x,y;
+    Uint32 yellow;
+    screen = SDL_GetWindowSurface(window);
+    yellow = SDL_MapRGB(screen->format, 0xff, 0xff, 0x00);
+
+    x = screen->w / 2;
+    y = screen->h / 2;
+    //lock the screen for direct access to pixels
+    if(SDL_MUSTLOCK(screen))
+    {
+        if(SDL_LockSurface(screen) < 0)
+        {
+            fprintf(stderr ,"Can't lock screen\n", SDL_GetError());
+            return 0;
+        }
+    }
+
+    // Draw a horizontal line of yellow pixels
+    for (int x = 100; x < 200; x++) 
+    {
+        for(int y = 150; y < 250; y++)
+        {
+            putPixel(screen, x,y, yellow); 
+        }
+    }
+
+    SDL_UpdateWindowSurface(window);
+
+    if(SDL_MUSTLOCK(screen))
+    {
+        SDL_UnlockSurface(screen);
+    }
+    
+
     //Keeps window from closing instantly
     SDL_Event event;
     int running = 1;
@@ -76,7 +84,10 @@ int main(int argc, char *argv[])
                 running = 0;
             }
         }
+        SDL_Delay(16);
     }
+
+ 
 
     SDL_DestroyWindow(window);
     SDL_Quit();
