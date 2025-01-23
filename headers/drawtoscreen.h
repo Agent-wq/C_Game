@@ -68,7 +68,6 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
         break;
 
     }
-    
 }
 
 //Draw images to screen
@@ -77,7 +76,7 @@ void display_bmp(const char *file_name, SDL_Renderer *renderer)
     SDL_Surface *image_surface = SDL_LoadBMP(file_name);
     if(image_surface == NULL)
     {
-        printf("could not load BMP file '%s\n'", file_name,SDL_GetError());
+        fprintf(stderr,"could not load BMP file '%s\n'", file_name,SDL_GetError());
         return;
     }
 
@@ -85,17 +84,16 @@ void display_bmp(const char *file_name, SDL_Renderer *renderer)
     SDL_FreeSurface(image_surface);
     if(texture ==NULL)
     {
-        printf("could not create texture from BMP file '%s\n'", file_name, SDL_GetError());
+        fprintf(stderr,"could not create texture from BMP file '%s\n'", file_name, SDL_GetError());
         return;
     }
     SDL_RenderClear(renderer);
     if(SDL_RenderCopy(renderer,texture,NULL,NULL)<0)
     {
-        printf("Could not copy texture %s\n", SDL_GetError());
+        fprintf(stderr,"Could not copy texture %s\n", SDL_GetError());
         return;
     }
 
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(texture);
-
 }
