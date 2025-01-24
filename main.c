@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <drawtoscreen.h>
+#include <eventhandling.h>
 
 
 int main(int argc, char *argv[]) 
@@ -65,8 +66,9 @@ int main(int argc, char *argv[])
         int x = rand() % screen->w;
         int y = rand() % screen->h;
         putPixel(screen,x,y,yellow);
+        SDL_UpdateWindowSurface(window);
     }
-    SDL_UpdateWindowSurface(window);
+  
     
     SDL_FillRect(screen, NULL, black);
     // SDL_UpdateWindowSurface(window);
@@ -74,57 +76,8 @@ int main(int argc, char *argv[])
     {
         SDL_UnlockSurface(screen);
     }
-
-    //Input handling
-    SDL_Event e;
-    int quit =0;
-    while(!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-
-            switch (e.type)
-            {
-            case SDL_KEYDOWN:
-                switch (e.key.keysym.sym)
-                {
-                case SDLK_a:
-                    printf("move left\n");
-                    break;
-                case SDLK_d:
-                    printf("move right\n");
-                    break;
-                case SDLK_w:
-                    printf("move forward\n");
-                    break;
-                case SDLK_s:
-                    printf("move backwards");
-                    break;
-                default:
-                    break;
-                }
-                break;
-            
-            default:
-                break;
-            }
-        }
-        
-    }
-    //Keeps window from closing instantly
-    SDL_Event event;
-    int running = 1;
-    while(running)
-    {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                running = 0;
-            }
-        }
-        SDL_Delay(16);
-    }
+    //event handling
+    handleInput();
 
     SDL_DestroyWindow(window);
     SDL_Quit();
