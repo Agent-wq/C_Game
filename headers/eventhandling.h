@@ -28,6 +28,9 @@ void handleInput()
                 case SDLK_s:
                     printf("move backwards\n");
                     break;
+                case SDLK_ESCAPE:
+                    running = false;
+                    break;
                 default:
                     break;
                 }

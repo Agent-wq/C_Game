@@ -4,11 +4,10 @@
 #include <drawtoscreen.h>
 #include <eventhandling.h>
 
-
 int main(int argc, char *argv[]) 
 {
-    const int SCREEN_WIDTH = 1024;
-    const int SCREEN_BREADTH = 720;
+    const int SCREEN_WIDTH = 1366;
+    const int SCREEN_HEIGHT = 768;
     
     SDL_Surface *screen;
     SDL_Window *window = NULL;
@@ -21,7 +20,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        window = SDL_CreateWindow("C_Game", SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_BREADTH,SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("C_Game", SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
         if(window == NULL)
         {
             fprintf(stderr,"Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -40,15 +39,13 @@ int main(int argc, char *argv[])
     
     //puts pixel 
     int x,y;
-    Uint32 yellow;
     Uint32 black;
+    Uint32 white;
+    Uint32 yellow;
     screen = SDL_GetWindowSurface(window);
-    yellow = SDL_MapRGB(screen->format, 0xff, 0xff, 0x00);
+    yellow = SDL_MapRGB(screen->format,0xFF, 0xFF, 0x00);
     black = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);  // Black color (for clearing)
-
-    // x = screen->w / 2;
-    // y = screen->h / 2;
- 
+    white = SDL_MapRGB(screen->format,0xff, 0xff, 0xff);
 
     //lock the screen for direct access to pixels
     if(SDL_MUSTLOCK(screen))
@@ -60,25 +57,28 @@ int main(int argc, char *argv[])
         }
     }
 
-    //test
-    for (int i = 0; i < 20000; i++)
+    //Render Ground
+    for (int x = 0; x < SCREEN_WIDTH; x++)
     {
-        int x = rand() % screen->w;
-        int y = rand() % screen->h;
-        putPixel(screen,x,y,yellow);
-        SDL_UpdateWindowSurface(window);
+        for (int y = screen->h - 100; y < SCREEN_HEIGHT; y++)
+        {
+            putPixel(screen,x,y,white);
+        }
     }
-  
+ 
     
+    SDL_UpdateWindowSurface(window);
     SDL_FillRect(screen, NULL, black);
-    // SDL_UpdateWindowSurface(window);
+
     if(SDL_MUSTLOCK(screen))
     {
         SDL_UnlockSurface(screen);
     }
+
     //event handling
     handleInput();
 
+    SDL_DestroyWindowSurface(window);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
